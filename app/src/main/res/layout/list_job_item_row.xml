@@ -4,6 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.amroid.jobapp.data.model.GithubJob"/>
+        <variable
+            name="job"
+            type="GithubJob" />
 
     </data>
 
@@ -22,6 +26,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
+            profileImage="@{job.company_logo}"
             tools:srcCompat="@tools:sample/avatars[14]" />
 
         <LinearLayout
@@ -42,14 +47,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/black"
                 app:layout_constrainedWidth="true"
-                tools:text="job title" />
+                android:text="@{job.title}" />
 
             <TextView
                 android:id="@+id/company"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constrainedWidth="true"
-                tools:text="Google" />
+                tools:text="@{job.company}" />
 
             <TextView
                 android:id="@+id/location"
