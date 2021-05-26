@@ -36,4 +36,9 @@ class JobRepo constructor(
 
     @MainThread
     fun getPostById(postId: String): Flow<GithubJob> = jobDao.getJobById(postId)
+
+    fun favouriteJob(jobID:String)=jobDao.updateJob(id = jobID,isSaved = true);
+
+    fun unFavouriteJob(jobID:String)=jobDao.updateJob(id = jobID,isSaved = false);
+
 }

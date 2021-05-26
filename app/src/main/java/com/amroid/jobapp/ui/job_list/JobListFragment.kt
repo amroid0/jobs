@@ -92,7 +92,6 @@ class JobListFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-       // findNavController().navigate(R.id.action_jobListFragment_to_jobDetailFragment)
         setupRecycle()
         viewModel.setEvent(JobListContract.Event.OnFetchJob)
 

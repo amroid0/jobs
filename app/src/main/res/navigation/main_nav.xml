@@ -27,5 +27,9 @@
         android:id="@+id/jobDetailFragment"
         android:name="com.amroid.jobapp.ui.job_detail.JobDetailFragment"
         android:label="fragment_job_detail"
-        tools:layout="@layout/fragment_job_detail" />
+        tools:layout="@layout/fragment_job_detail" >
+        <argument
+            android:name="jobID"
+            app:argType="string" />
+    </fragment>
 </navigation>

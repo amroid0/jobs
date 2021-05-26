@@ -5,7 +5,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.amroid.jobapp.R
+import com.amroid.jobapp.databinding.FragmentJobDetailBinding
+import com.amroid.jobapp.databinding.FragmentJobListBinding
+import com.amroid.jobapp.ui.job_list.JobListAdapter
+import com.amroid.jobapp.ui.job_list.JobListContract
+import com.amroid.jobapp.ui.job_list.JobListViewModel
+import com.amroid.jobapp.utils.NetworkState
+import com.amroid.jobapp.utils.OnPositionActionListener
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import org.koin.android.viewmodel.compat.ViewModelCompat.viewModel
+import org.koin.android.viewmodel.ext.android.viewModel
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,43 +34,55 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class JobDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    private val viewModel by viewModel<JobDetailViewModel>()
+    private lateinit var binding: FragmentJobDetailBinding
+
+
+    @InternalCoroutinesApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
+        initObservers()
+
     }
+
+    /**
+     * Initialize Observers
+     */
+    @InternalCoroutinesApi
+    private fun initObservers() {
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiState.collect {
+                when (it.jobDetailState) {
+
+
+                    is NetworkState.Success -> {
+
+
+
+                    }
+                }
+            }
+        }
+
+    }
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_job_detail, container, false)
+        binding= DataBindingUtil.inflate( inflater,R.layout.fragment_job_detail, container, false)
+        return  binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment JobDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            JobDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.setEvent(JobDetailContract.Event.OnFetchJobDetail())
+
+
     }
+
 }
