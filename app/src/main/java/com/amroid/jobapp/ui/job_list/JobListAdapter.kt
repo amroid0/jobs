@@ -7,11 +7,11 @@ import androidx.recyclerview.widget.ListAdapter
 import com.amroid.jobapp.R
 import com.amroid.jobapp.data.model.GithubJob
 import com.amroid.jobapp.databinding.ListJobItemRowBinding
-import com.amroid.jobapp.utils.OnPositionActionListener
+import com.amroid.jobapp.utils.OnJobActionListener
 
 
 class JobListAdapter(
-    private val onPositionActionListener: OnPositionActionListener
+    private val onJobActionListener: OnJobActionListener
 ) : ListAdapter<GithubJob, JobViewHolder>(PositionDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int):JobViewHolder {
@@ -20,7 +20,7 @@ class JobListAdapter(
            R.layout.list_job_item_row, parent, false)
       return  JobViewHolder(
             binidng,
-            onPositionActionListener
+            onJobActionListener
         )
 
 

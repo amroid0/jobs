@@ -34,7 +34,7 @@ class JobDetailViewModel (val repo: JobRepo) : BaseViewModel<JobDetailContract.E
 
     private fun getJobDetail(jobID:String) {
         viewModelScope.launch {
-            repo.getPostById(postId = "1").collect() {
+            repo.getPostById(postId = jobID).collect {
                 setState { copy(jobDetailState = NetworkState.success(it)) }
             }
         }

@@ -29,5 +29,5 @@ interface JobDao {
     fun getAlljobs(): Flow<List<GithubJob>>
 
     @Query("Update   job set isSaved=:isSaved where id=:id")
-    fun updateJob( id:String,isSaved:Boolean)
+ suspend fun updateJob( id:String,isSaved:Boolean)
 }

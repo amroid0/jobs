@@ -14,13 +14,10 @@ abstract class NetworkBoundResource<RESULT, REQUEST> {
         emit(NetworkState.loading())
 
         try {
-            // Emit Database content first
-            emit(NetworkState.success(fetchFromLocal().first()))
+           // emit(NetworkState.success(fetchFromLocal().first()))
 
-            // Fetch latest posts from remote
             val apiResponse = fetchFromRemote()
 
-            // Parse body
             val remotePosts = apiResponse.body()
 
             // Check for response validation
@@ -28,7 +25,6 @@ abstract class NetworkBoundResource<RESULT, REQUEST> {
                 // Save posts into the persistence storage
                 saveRemoteData(remotePosts)
             } else {
-                // Something went wrong! Emit Error NetworkState.
                 emit(NetworkState.error(apiResponse.message()))
             }
         } catch (e: Exception) {

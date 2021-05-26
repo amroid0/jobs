@@ -26,6 +26,8 @@ class JobListViewModel(val repo:JobRepo) : BaseViewModel<JobListContract.Event, 
     override fun handleEvent(event: JobListContract.Event) {
         when (event) {
             is JobListContract.Event.OnFetchJob -> { getJobList() }
+            is JobListContract.Event.OnFavourite -> { favouriteJob(event.jobID!!) }
+            is JobListContract.Event.OnUnFavourite -> { unFavouriteJob(event.jobID!!) }
             is JobListContract.Event.OnNavigateToDetail -> {
                 setEffect { JobListContract.Effect.NavigateToDetail }
             }
@@ -43,6 +45,17 @@ class JobListViewModel(val repo:JobRepo) : BaseViewModel<JobListContract.Event, 
             }
 
             // Set Loading
+        }
+    }
+    private fun favouriteJob(jobID:String) {
+        viewModelScope.launch {
+            repo.favouriteJob(jobID);
+        }
+    }
+
+    private fun unFavouriteJob(jobID:String) {
+        viewModelScope.launch {
+            repo.unFavouriteJob(jobID);
         }
     }
 }

@@ -4,6 +4,7 @@ import com.amroid.jobapp.base.UiEffect
 import com.amroid.jobapp.base.UiEvent
 import com.amroid.jobapp.base.UiState
 import com.amroid.jobapp.data.model.GithubJob
+import com.amroid.jobapp.ui.job_detail.JobDetailContract
 import com.amroid.jobapp.utils.NetworkState
 
 
@@ -12,6 +13,8 @@ class JobListContract {
     sealed class Event : UiEvent {
         object OnFetchJob : Event()
         object OnNavigateToDetail : Event()
+        data class OnFavourite( var jobID:String?) : Event()
+        data class   OnUnFavourite(var jobID:String?) :Event()
 
     }
 
@@ -23,7 +26,7 @@ class JobListContract {
 
     sealed class Effect : UiEffect {
 
-        data class NavigateToDetail(val JobId:String) : Effect()
+        object NavigateToDetail : Effect()
 
     }
 

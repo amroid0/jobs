@@ -5,24 +5,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.amroid.jobapp.R
+import com.amroid.jobapp.data.model.GithubJob
 import com.amroid.jobapp.databinding.FragmentJobListBinding
 import com.amroid.jobapp.utils.NetworkState
-import com.amroid.jobapp.utils.OnPositionActionListener
+import com.amroid.jobapp.utils.OnJobActionListener
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class JobListFragment : Fragment(),
-    OnPositionActionListener {
+    OnJobActionListener {
 
     private val viewModel by viewModel<JobListViewModel>()
     private lateinit var binding: FragmentJobListBinding
+    private var jobId: String?=null
 
     private val adapter = JobListAdapter(this)
 
@@ -45,18 +46,29 @@ class JobListFragment : Fragment(),
     private fun initObservers() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.collect {
+
+                binding.progressBar.visibility = View.GONE
+                binding.recyclerView.visibility = View.GONE
+                binding.noResultsMessage.visibility = View.GONE
                 when (it.jobListState) {
 
+
                     is NetworkState.Idle -> {
-                        binding.progressBar.visibility = View.GONE
                     }
-                    is NetworkState.Loading -> {                         binding.progressBar.visibility = View.VISIBLE
+                    is NetworkState.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
                     }
                     is NetworkState.Success -> {
-                        binding.progressBar.visibility = View.GONE
+                        if(binding.swipeRefresh.isRefreshing){
+                            binding.swipeRefresh.isRefreshing=false
+                        }
                         binding.recyclerView.visibility = View.VISIBLE
-                        showToast(it.jobListState.data.toString())
                         adapter.submitList(it.jobListState.data)
+
+                    }
+
+                    is NetworkState.Error -> {
+                        binding.noResultsMessage.visibility = View.VISIBLE
 
                     }
                 }
@@ -67,7 +79,8 @@ class JobListFragment : Fragment(),
             viewModel.effect.collect {
                 when (it) {
                     is JobListContract.Effect.NavigateToDetail -> {
-                         findNavController().navigate(R.id.action_jobListFragment_to_jobDetailFragment)
+                        val action=JobListFragmentDirections.actionJobListFragmentToJobDetailFragment(jobId!!);
+                         findNavController().navigate(action)
                     }
                 }
             }
@@ -75,12 +88,6 @@ class JobListFragment : Fragment(),
     }
 
 
-    /**
-     * Show simple toast message
-     */
-    private fun showToast(message: String) {
-        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -94,14 +101,18 @@ class JobListFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         setupRecycle()
         viewModel.setEvent(JobListContract.Event.OnFetchJob)
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.setEvent(JobListContract.Event.OnFetchJob)
+        }
 
 
     }
 
-    override fun onPositionAction(positionAction: JobListContract.Event) {
-        viewModel.setEvent(JobListContract.Event.OnNavigateToDetail)
-
+    override fun onJobClicked(positionAction: JobListContract.Event, job:GithubJob) {
+        jobId=job.id
+        viewModel.setEvent(positionAction)
     }
+
 
 
 }
